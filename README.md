@@ -1,24 +1,24 @@
 # Spring Boot E-Commerce Backend Engine (with JWT Security)
 
-A secure, high-performance RESTful Backend Engine built using **Spring Boot 3**, **Spring Security 6**, and **JWT (JSON Web Token)**. This project implements stateless authentication and role-based access control (RBAC) to secure e-commerce resources like carts, orders, and product management.
+A secure, high-performance RESTful Backend Engine built using **Spring Boot 3.x**, **Spring Security 6**, and **JWT (JSON Web Token)**. This project implements a stateless authentication mechanism and role-based access control (RBAC) to secure e-commerce resources like carts, orders, and product management.
 
 ---
 
 ## 🚀 Key Features
-* **Stateless JWT Authentication:** Secure login via `/api/auth/login` returning signed bearer tokens.
-* **Role-Based Access Control (RBAC):**
-  * `ROLE_USER`: Browse products, manage personal cart, and view personal order history.
-  * `ROLE_ADMIN`: Add new products and view all customer orders.
-* **Password Hashing:** Passwords encrypted using standard BCrypt encoding.
-* **Data Persistence:** Integrated with Spring Data JPA and H2 In-Memory Database for zero-setup execution.
-* **Global Exception Handling:** Unified error JSON responses via `@RestControllerAdvice`.
+* **Stateless JWT Authentication:** Users authenticate via credentials and receive a secure token for subsequent requests.
+* **Role-Based Access Control (RBAC):** 
+  * `ROLE_USER` can browse products and manage their shopping cart.
+  * `ROLE_ADMIN` has exclusive access to create, update, or delete products.
+* **Password Hashing:** Secure password storage using BCrypt encryption.
+* **Data Persistence:** Integrated with Spring Data JPA and H2 In-Memory Database for fast, zero-configuration development.
+* **Global Exception Handling:** Clean, unified error responses for `InvalidCredentialsException`, `ResourceNotFoundException`, etc.
 
 ---
 
 ## 🛠️ Tech Stack
-* **Framework:** Spring Boot 
-* **Security:** Spring Security 6, JWT (io.jsonwebtoken 0.12.x)
-* **Language:** Java 17
+* **Framework:** Spring Boot (v3.x)
+* **Security:** Spring Security 6 & JSON Web Tokens (JWT)
+* **Language:** Java (v17+)
 * **Database:** H2 In-Memory Database
 * **ORM:** Spring Data JPA (Hibernate)
 * **Build Tool:** Maven
@@ -26,52 +26,34 @@ A secure, high-performance RESTful Backend Engine built using **Spring Boot 3**,
 ---
 
 ## 🔐 Security Workflow
-1. **Registration:** `POST /api/auth/register` creates a user with encrypted password.
-2. **Login:** `POST /api/auth/login` verifies credentials and returns a Bearer JWT.
-3. **Authorized Requests:** Send token in the header:
-Authorization: Bearer
-
-4. **Validation:** `JwtAuthenticationFilter` intercepts requests, verifies signature, extracts claims, and populates the `SecurityContextHolder`.
+1. **Login:** User sends credentials to `/api/auth/login`.
+2. **Token Generation:** Server validates credentials and generates a signed JWT token containing user roles.
+3. **Authorization:** For protected endpoints (e.g., `/api/cart`), the client sends the token in the `Authorization: Bearer <TOKEN>` header.
+4. **Validation:** Custom JWT Filter intercepts the request, validates the token signature, and sets the security context.
 
 ---
 
 ## 🛣️ API Endpoints
 
 ### 🔑 Authentication (Public)
-| Method | Endpoint | Description |
+| HTTP Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `POST` | `/api/auth/register` | Register a new customer or admin |
-| `POST` | `/api/auth/login` | Authenticate user and return JWT |
+| `POST` | `/api/auth/register` | Register a new user/customer |
+| `POST` | `/api/auth/login` | Authenticate user and return JWT Token |
 
 ### 🛍️ E-Commerce Resources (Protected)
-| Method | Endpoint | Allowed Roles | Description |
+| HTTP Method | Endpoint | Allowed Roles | Description |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/api/products` | Public | View available product catalog |
-| `POST` | `/api/products` | `ROLE_ADMIN` | Add new product to catalog |
-| `GET` | `/api/cart` | `ROLE_USER` | View items in personal cart |
-| `POST` | `/api/cart` | `ROLE_USER` | Add product to shopping cart |
+| `GET` | `/api/products` | `ANYONE` | View available product catalog |
+| `POST` | `/api/products` | `ROLE_ADMIN` | Add a new product to inventory |
+| `POST` | `/api/cart` | `ROLE_USER` | Add items to the shopping cart |
 | `GET` | `/api/orders` | `ROLE_USER`, `ROLE_ADMIN` | View order history |
 
 ---
 
-## ⚙️ Local Setup & Execution
+## ⚙️ Local Setup & Testing
 
-1. **Clone the repository:**
-```bash
-git clone [https://github.com/Abhishek16758/spring-boot-ecommerce.git](https://github.com/Abhishek16758/spring-boot-ecommerce.git)
-cd spring-boot-ecommerce
-
-    Run the application:
-    Bash
-
-mvn clean spring-boot:run
-
-Database Console:
-
-    URL: http://localhost:8080/h2-console
-
-    JDBC URL: jdbc:h2:mem:ecommercedb
-
-    Username: sa
-
-    Password: (leave blank)
+1. **Clone and Navigate:**
+   ```bash
+   git clone [https://github.com/Abhishek16758/spring-boot-ecommerce.git](https://github.com/Abhishek16758/spring-boot-ecommerce.git)
+   cd spring-boot-ecommerce
