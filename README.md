@@ -1,48 +1,77 @@
-# Spring Boot E-Commerce Backend Engine
+# Spring Boot E-Commerce Backend Engine (with JWT Security)
 
-A production-ready, enterprise-grade e-commerce backend built using **Spring Boot**, **Spring Data JPA**, and an **H2 In-Memory Database**. This project demonstrates standard 3-tier industry architecture patterns, making it highly scalable and easily maintainable.
+A secure, high-performance RESTful Backend Engine built using **Spring Boot 3**, **Spring Security 6**, and **JWT (JSON Web Token)**. This project implements stateless authentication and role-based access control (RBAC) to secure e-commerce resources like carts, orders, and product management.
 
 ---
 
 ## 🚀 Key Features
-* **Product Management Core:** Full CRUD operations to add, view, update, and remove products.
-* **Enterprise Directory Structure:** Clean separation of concerns with distinct layers for Web/REST, Business Logic, and Database communication.
-* **Auto-configured Database:** Built-in H2 database integration for seamless local testing without complex setups.
-* **Boilerplate Reduction:** Integrated with Project Lombok to maintain clean, human-readable data models.
+* **Stateless JWT Authentication:** Secure login via `/api/auth/login` returning signed bearer tokens.
+* **Role-Based Access Control (RBAC):**
+  * `ROLE_USER`: Browse products, manage personal cart, and view personal order history.
+  * `ROLE_ADMIN`: Add new products and view all customer orders.
+* **Password Hashing:** Passwords encrypted using standard BCrypt encoding.
+* **Data Persistence:** Integrated with Spring Data JPA and H2 In-Memory Database for zero-setup execution.
+* **Global Exception Handling:** Unified error JSON responses via `@RestControllerAdvice`.
 
 ---
 
-## 📂 Architecture & Package Structure
-
-The project strictly follows the standard enterprise layout that modern software engineering teams look for:
-
-* `com.abhishek.ecommerce.controller` ➡️ Exposes secure REST API Endpoints (HTTP mappings).
-* `com.abhishek.ecommerce.service` ➡️ Houses core business logic, validation rules, and processing calculations.
-* `com.abhishek.ecommerce.repository` ➡️ Manages direct data persistence queries (extends JpaRepository).
-* `com.abhishek.ecommerce.model` ➡️ Data entities that map Java classes directly to relational database tables.
-
----
-
-## 🛠️ Tech Stack & Dependencies
-* **Java 17** (or above)
-* **Spring Boot 3.x** (Web & Data JPA)
-* **H2 Database Engine** (In-Memory Data Store)
-* **Lombok**
-* **Maven** (Dependency Management)
+## 🛠️ Tech Stack
+* **Framework:** Spring Boot 3.2.x
+* **Security:** Spring Security 6, JJWT (io.jsonwebtoken 0.12.x)
+* **Language:** Java 17
+* **Database:** H2 In-Memory Database
+* **ORM:** Spring Data JPA (Hibernate)
+* **Build Tool:** Maven
 
 ---
 
-## 💻 How to Run This Project Locally
+## 🔐 Security Workflow
+1. **Registration:** `POST /api/auth/register` creates a user with encrypted password.
+2. **Login:** `POST /api/auth/login` verifies credentials and returns a Bearer JWT.
+3. **Authorized Requests:** Send token in the header:
+Authorization: Bearer
 
-### 1. Prerequisites
-Make sure you have **Java 17** and **Eclipse IDE** (with STS plugin) installed on your system.
+4. **Validation:** `JwtAuthenticationFilter` intercepts requests, verifies signature, extracts claims, and populates the `SecurityContextHolder`.
 
-### 2. Clone and Setup
-Import this repository directly into your workspace as an existing Maven project.
+---
 
-### 3. Running the Application
-Right-click on `EcommerceApplication.java` inside Eclipse and select **Run As** ➡️ **Spring Boot App**.
+## 🛣️ API Endpoints
 
-The application will start running on port `8080` by default:
-* **API Endpoint:** `http://localhost:8080/api/products`
-* **H2 Database Console:** `http://localhost:8080/h2-console`
+### 🔑 Authentication (Public)
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/auth/register` | Register a new customer or admin |
+| `POST` | `/api/auth/login` | Authenticate user and return JWT |
+
+### 🛍️ E-Commerce Resources (Protected)
+| Method | Endpoint | Allowed Roles | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/products` | Public | View available product catalog |
+| `POST` | `/api/products` | `ROLE_ADMIN` | Add new product to catalog |
+| `GET` | `/api/cart` | `ROLE_USER` | View items in personal cart |
+| `POST` | `/api/cart` | `ROLE_USER` | Add product to shopping cart |
+| `GET` | `/api/orders` | `ROLE_USER`, `ROLE_ADMIN` | View order history |
+
+---
+
+## ⚙️ Local Setup & Execution
+
+1. **Clone the repository:**
+```bash
+git clone [https://github.com/Abhishek16758/spring-boot-ecommerce.git](https://github.com/Abhishek16758/spring-boot-ecommerce.git)
+cd spring-boot-ecommerce
+
+    Run the application:
+    Bash
+
+mvn clean spring-boot:run
+
+Database Console:
+
+    URL: http://localhost:8080/h2-console
+
+    JDBC URL: jdbc:h2:mem:ecommercedb
+
+    Username: sa
+
+    Password: (leave blank)
