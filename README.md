@@ -16,8 +16,8 @@ A secure, high-performance RESTful Backend Engine built using **Spring Boot 3**,
 ---
 
 ## 🛠️ Tech Stack
-* **Framework:** Spring Boot 3.2.x
-* **Security:** Spring Security 6, JJWT (io.jsonwebtoken 0.12.x)
+* **Framework:** Spring Boot 
+* **Security:** Spring Security 6, JWT (io.jsonwebtoken 0.12.x)
 * **Language:** Java 17
 * **Database:** H2 In-Memory Database
 * **ORM:** Spring Data JPA (Hibernate)
